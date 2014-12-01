@@ -1,0 +1,48 @@
+.gomuku {
+    width: 400px;
+    height: 400px;
+    margin: 100px auto 0;
+}
+
+.gomuku-inner {
+    display: table;
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+
+.gomuku-row {
+    display: table-row;
+}
+
+.gomuku-cell {
+    display: table-cell;
+    width: 33%;
+    height: 33%;
+    border: 1px solid #ccc;
+    position: relative;
+}
+
+.gomuku-cell:hover {
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.gomuku-cell-white:before,
+.gomuku-cell-black:before {
+    font: 48px Arial;
+    color: #333;
+    top: 20%;
+    left: 32%;
+    position: absolute;
+}
+
+.gomuku-cell-black:before {
+    content: '✗';
+    font-size: 72px;
+}
+
+.gomuku-cell-white:before {
+    content: '◯';
+    left: 27px;
+    font-size: 58px;
+}
