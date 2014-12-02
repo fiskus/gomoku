@@ -13,7 +13,8 @@ function Gomuku (type) {
     ];
 
     if (type === 'o') {
-        createGameTree(data, opponentType);
+        var branches = createGameTree(data, opponentType);
+        makeMove(branches[0].x, branches[0].y, opponentType);
     }
 
 
@@ -50,13 +51,20 @@ function Gomuku (type) {
         var coords = getXYByCell(cell);
         data[coords[0]][coords[1]] = type;
 
-        createGameTree(data, opponentType);
+        var branches = createGameTree(data, opponentType);
+        makeMove(branches[0].x, branches[0].y, opponentType);
 
         if (hasWon(type, data)) {
             end(true);
         } else if (hasWon(opponentType, data)) {
             end(false);
         }
+    }
+
+    function makeMove (x, y, t) {
+        var cell = getCellByXY(x, y);
+        fill(cell, t);
+        data[x][y] = t;
     }
 
     function start () {
@@ -177,31 +185,15 @@ function Gomuku (type) {
                         y: y
                     };
                 }
-                /*
-                if (branch) {
-                    var cell = getCellByXY(x, y);
-                    fill(cell, opponentType);
-                    data[x][y] = opponentType;
-                    return true;
-                }
-                */
             }
         });
-        branches.sort(function (a, b) {
+        return branches.sort(function (a, b) {
             if (b) {
                 return a.steps - b.steps;
             } else {
                 return - 1000000;
             }
         });
-        if (branches[0]) {
-            var x = branches[0].x;
-            var y = branches[0].y;
-            var cell = getCellByXY(x, y);
-            fill(cell, opponentType);
-            data[x][y] = opponentType;
-            return true;
-        }
     }
 
     function createGameBranch (rows, t, collector) {
@@ -253,7 +245,8 @@ function Gomuku (type) {
     function Test () {
         var specs = [];
 
-        specs.push(function() {
+        // 0
+        specs.push(function () {
             return hasWon('x', [
                 ['', '', ''],
                 ['x', 'x', 'x'],
@@ -261,7 +254,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 1
+        specs.push(function () {
             return hasWon('x', [
                 ['', 'x', ''],
                 ['', 'x', ''],
@@ -269,7 +263,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 2
+        specs.push(function () {
             return hasWon('x', [
                 ['x', '', ''],
                 ['', 'x', ''],
@@ -277,7 +272,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 3
+        specs.push(function () {
             return hasWon('x', [
                 ['', '', 'x'],
                 ['', 'x', ''],
@@ -285,7 +281,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 4
+        specs.push(function () {
             return !hasWon('x', [
                 ['x', '', ''],
                 ['x', '', 'x'],
@@ -293,7 +290,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 5
+        specs.push(function () {
             return !hasWon('x', [
                 ['', 'x', ''],
                 ['x', 'x', ''],
@@ -301,7 +299,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 6
+        specs.push(function () {
             return hasWon('o', [
                 ['o', 'o', 'o'],
                 ['', '', ''],
@@ -309,7 +308,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 7
+        specs.push(function () {
             return hasWon('o', [
                 ['', '', 'o'],
                 ['', '', 'o'],
@@ -317,7 +317,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 8
+        specs.push(function () {
             return !hasWon('o', [
                 ['', '', ''],
                 ['', '', ''],
@@ -325,7 +326,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 9
+        specs.push(function () {
             return hasWon('o', [
                 ['o', '', ''],
                 ['', 'o', ''],
@@ -333,7 +335,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 10
+        specs.push(function () {
             return hasWon('o', [
                 ['', '', 'o'],
                 ['', 'o', ''],
@@ -341,7 +344,8 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 11
+        specs.push(function () {
             return !hasWon('o', [
                 ['o', '', ''],
                 ['', '', ''],
@@ -349,13 +353,26 @@ function Gomuku (type) {
             ]);
         });
 
-        specs.push(function() {
+        // 12
+        specs.push(function () {
             return !hasWon('o', [
                 ['', 'o', ''],
                 ['', 'o', ''],
                 ['o', '', '']
             ]);
         });
+
+        // 13
+        specs.push(function () {
+            var d = [
+                ['', '', ''],
+                ['', 'o', ''],
+                ['o', '', '']
+            ];
+            var branches = createGameTree(data, opponentType);
+            return branches[0].x === 0 && branches[0].y === 0;
+        });
+
 
         return specs.every(function(spec, i) {
             var isPass = spec();
