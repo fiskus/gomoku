@@ -157,8 +157,41 @@ function Gomuku (type) {
         }
     }
 
+    /*
+    function createGameTree1 (rows, t) {
+        var coordinatesMap = [];
+        for (var i = 0; i < rows.length; i++) {
+            for (var j = 0; j < rows[i].length; j++) {
+                if (rows[i][j] === '') {
+                    coordinatesMap.push([i, j]);
+                }
+            }
+        }
+
+        return coordinatesMap.map(function (xy) {
+            var x = xy[0];
+            var y = xy[1];
+            var cloned = clone(rows);
+
+            cloned[x][y] = t;
+
+            var mirroredType = t === type ? opponentType : type;
+            return {
+                xy: xy,
+                state: cloned
+            }
+            return createGameTree1(cloned, mirroredType);
+        });
+    }
+    console.log(createGameTree1([
+        ['x', 'x', 'x'],
+        ['x', 'x', 'x'],
+        ['x', 'x', ''],
+    ], 'x'));
+    */
+
     function createGameTree (rows, t) {
-        coordinatesMap = [];
+        var coordinatesMap = [];
         for (var i = 0; i < rows.length; i++) {
             for (var j = 0; j < rows[i].length; j++) {
                 coordinatesMap.push([i, j]);
@@ -199,7 +232,7 @@ function Gomuku (type) {
     function createGameBranch (rows, t, collector) {
         tree = [];
 
-        coordinatesMap = [];
+        var coordinatesMap = [];
         for (var i = 0; i < rows.length; i++) {
             for (var j = 0; j < rows[i].length; j++) {
                 if (rows[i][j] === '') {
@@ -218,18 +251,9 @@ function Gomuku (type) {
             tree.push(cloned);
 
             var mirroredType = t === type ? opponentType : type;
-            if (hasWon(type, cloned)) {
-                collector.count = collector.count + 100;
-            }
-            if (hasWon(opponentType, cloned)) {
-                collector.count =
-                        collector.count - (coordinatesMap.length - index);
-                return tree;
-            } else {
-                var branch = createGameBranch(cloned, mirroredType, collector);
-                if (branch) {
-                    return tree.concat(branch);
-                }
+            var branch = createGameBranch(cloned, mirroredType, collector);
+            if (branch) {
+                return tree.concat(branch);
             }
         });
     }
